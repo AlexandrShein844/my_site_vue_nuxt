@@ -1,12 +1,12 @@
 <template>
-    <div class="default">
-      <slot />
-    </div>
-  </template>
+  <div class="layout-default">
+    <slot />
+  </div>
+</template>
   
   <style scoped>
-  .default {
-    padding: 1rem;
+  .layout-default {
+    box-sizing: border-box;
     /*position: relative;*/
   }
   /* .default::before {

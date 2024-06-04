@@ -1,6 +1,5 @@
 <template>
   <title>Главная</title>
-  <vHeader />
   <main class="main">
     <NuxtLink to="/catalog">
       <MainBanner/>
@@ -15,9 +14,12 @@
     </section>
   </main>
 </template>
+
 <style>
 body {
   background-image:url(assets/images/цепи_простые.png);
+  margin: 0;
+  padding: 0;
 }
 </style>
 <style scoped>
