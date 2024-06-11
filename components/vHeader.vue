@@ -157,9 +157,8 @@ export default {
 <style scoped>
 .header {
   max-width: 100%;
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
   width: 100%;
   height: 60px;
   background-color: #1d1c1c;

@@ -1,42 +1,33 @@
 <template>
-  <title>{{product.name}}</title>
-    <div class="product-page">
-      <div class="product-image-container">
-        <img :src="product.image" :alt="product.name" class="product-image">
-      </div>
-      <div class="product-info-container">
-        <h1 class="product-name">{{ product.name }}</h1>
-        <p class="product-description">{{ product.description }}</p>
-        <p class="product-price"><strong>{{ product.price }} RUB</strong></p>
-        <div v-if="product.category !='another'" class="product-size-buttons">
-          <button
-            v-for="size in product.sizes"
-            :key="size"
-            @click="selectedSize = size"
-            :class="{ 'size-button-selected': selectedSize === size }"
-            :disabled="isAddingToCartId === product.id"
-          >
-            {{ size }}
-          </button>
-        </div>
-        <button
-          :disabled="isAddingToCartId === product.id || !selectedSize && product.category !='another'"
-          @click="addToCart(product)"
-          class="add-to-cart-button"
-          :class="{ 'adding-to-cart': isAddingToCartId === product.id }"
-        >
-          {{ isAddingToCartId === product.id ? 'Добавление...' : 'Добавить в корзину' }}
+  <title>{{ product.name }}</title>
+  <div class="product-page">
+    <div class="product-image-container">
+      <img :src="product.image" :alt="product.name" class="product-image">
+    </div>
+    <div class="product-info-container">
+      <h1 class="product-name">{{ product.name }}</h1>
+      <p class="product-description">{{ product.description }}</p>
+      <p class="product-price"><strong>{{ product.price }} RUB</strong></p>
+      <div v-if="product.category != 'another'" class="product-size-buttons">
+        <button v-for="size in product.sizes" :key="size" @click="selectedSize = size"
+          :class="{ 'size-button-selected': selectedSize === size }" :disabled="isAddingToCartId === product.id">
+          {{ size }}
         </button>
       </div>
+      <button :disabled="isAddingToCartId === product.id || !selectedSize && product.category != 'another'"
+        @click="addToCart(product)" class="add-to-cart-button"
+        :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
+        {{ isAddingToCartId === product.id ? 'Добавление...' : 'Добавить в корзину' }}
+      </button>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script>
-  import axios from 'axios'
-  import { ref, onMounted } from 'vue'
-  import products from '@/api/products'
+<script>
+import axios from 'axios'
+import { ref, onMounted } from 'vue'
 
-  export default {
+export default {
   setup() {
     const product = ref({})
     const isAddingToCartId = ref(null)
@@ -50,102 +41,100 @@
     })
 
     const addToCart = async (product) => {
-  isAddingToCartId.value = product.id
+      isAddingToCartId.value = product.id
 
-  // Отправляем запрос на MockAPI для получения данных о товарах в корзине
-  const responseCart = await axios.get('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
-  const cartData = responseCart.data
+      // Отправляем запрос на MockAPI для получения данных о товарах в корзине
+      const responseCart = await axios.get('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
+      const cartData = responseCart.data
 
-  // Проверяем, есть ли в корзине товар с идентичным product_id и размером
-  let existingItem = null
-  if (product.category !== 'another') {
-    existingItem = cartData.find((item) => item.product_id === product.id && item.size === selectedSize.value)
-  } else {
-    existingItem = cartData.find((item) => item.product_id === product.id)
-  }
-
-  if (existingItem) {
-    // Если товар уже есть в корзине, увеличиваем его количество
-    existingItem.quantity++
-    // Отправляем запрос на MockAPI для обновления количества товара в корзине
-    await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${existingItem.id}`, {
-      product_id: existingItem.product_id,
-      quantity: existingItem.quantity,
-      price: existingItem.price,
-      image: existingItem.image,
-      name: existingItem.name,
-      ...(product.category !== 'another' && { size: selectedSize.value }),
-      category: existingItem.category
-    })
-  } else {
-    // Если товара еще нет в корзине, добавляем его в корзину с количеством 1 и размером
-    const response = await axios.post('https://6649e9874032b1331bef35a4.mockapi.io/api/cart', {
-      product_id: product.id,
-      quantity: 1,
-      price: product.price,
-      image: product.image,
-      name: product.name,
-      ...(product.category !== 'another' && { size: selectedSize.value }),
-      category: product.category
-    })
-  }
-
-  // Обновляем данные о товарах в корзине в localStorage
-  const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
-  let index = null
-  if (product.category !== 'another') {
-    index = cartItems.findIndex((item) => item.id === product.id && item.size === selectedSize.value)
-  } else {
-    index = cartItems.findIndex((item) => item.id === product.id)
-  }
-  if (index !== -1) {
-    cartItems[index].quantity++
-  } else {
-    cartItems.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-      image: product.image,
-      ...(product.category !== 'another' && { size: selectedSize.value }),
-      category: product.category
-    })
-  }
-  localStorage.setItem('cartItems', JSON.stringify(cartItems))
-
-  setTimeout(() => {
-    isAddingToCartId.value = null
-  }, 1000)
-}
-
-      return {
-        product,
-        addToCart,
-        isAddingToCartId,
-        selectedSize
+      // Проверяем, есть ли в корзине товар с идентичным product_id и размером
+      let existingItem = null
+      if (product.category !== 'another') {
+        existingItem = cartData.find((item) => item.product_id === product.id && item.size === selectedSize.value)
+      } else {
+        existingItem = cartData.find((item) => item.product_id === product.id)
       }
+
+      if (existingItem) {
+        // Если товар уже есть в корзине, увеличиваем его количество
+        existingItem.quantity++
+        // Отправляем запрос на MockAPI для обновления количества товара в корзине
+        await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${existingItem.id}`, {
+          product_id: existingItem.product_id,
+          quantity: existingItem.quantity,
+          price: existingItem.price,
+          image: existingItem.image,
+          name: existingItem.name,
+          ...(product.category !== 'another' && { size: selectedSize.value }),
+          category: existingItem.category
+        })
+      } else {
+        // Если товара еще нет в корзине, добавляем его в корзину с количеством 1 и размером
+        const response = await axios.post('https://6649e9874032b1331bef35a4.mockapi.io/api/cart', {
+          product_id: product.id,
+          quantity: 1,
+          price: product.price,
+          image: product.image,
+          name: product.name,
+          ...(product.category !== 'another' && { size: selectedSize.value }),
+          category: product.category
+        })
+      }
+
+      // Обновляем данные о товарах в корзине в localStorage
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
+      let index = null
+      if (product.category !== 'another') {
+        index = cartItems.findIndex((item) => item.id === product.id && item.size === selectedSize.value)
+      } else {
+        index = cartItems.findIndex((item) => item.id === product.id)
+      }
+      if (index !== -1) {
+        cartItems[index].quantity++
+      } else {
+        cartItems.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.image,
+          ...(product.category !== 'another' && { size: selectedSize.value }),
+          category: product.category
+        })
+      }
+      localStorage.setItem('cartItems', JSON.stringify(cartItems))
+
+      setTimeout(() => {
+        isAddingToCartId.value = null
+      }, 1000)
+    }
+
+    return {
+      product,
+      addToCart,
+      isAddingToCartId,
+      selectedSize
     }
   }
-  </script>
+}
+</script>
 
-  <style lang="less" scoped>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+<style lang="less" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 body {
   font-family: 'Roboto', sans-serif;
 }
 
 .product-page {
-  padding-top: 60px;
   max-width: 1200px;
-  margin: 0 auto;
   padding: 50px;
   display: flex;
   flex-direction: row;
-  background-color: #fff;
+  background-color: #ebebeb;
 
   .product-image-container {
-    flex: 1;
+    justify-content: flex-end;
     margin-right: 2rem;
 
     .product-image {
@@ -159,6 +148,9 @@ body {
   .product-info-container {
     text-align: right;
     flex: 1;
+    gap: 12px;
+    display: flex;
+    flex-direction: column;
 
     .product-name {
       font-size: 2rem;
@@ -182,10 +174,11 @@ body {
 
     .product-size-buttons {
       margin-bottom: 10px;
+      margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-end; 
-      margin-top: 10px; 
+      gap: 12px;
+      justify-content: flex-end;
 
       .size-button {
         display: inline-block;
@@ -221,7 +214,7 @@ body {
     .add-to-cart-button {
       display: inline-block;
       padding: 5px 10px;
-      margin-top: 5px;
+      margin: 5px 0px 0px 80px;
       font-size: 15px;
       font-weight: bold;
       color: #fff;
@@ -230,7 +223,7 @@ body {
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-
+      
       &:hover {
         background-color: #555;
       }
@@ -244,5 +237,4 @@ body {
     }
   }
 }
-
-  </style>
+</style>

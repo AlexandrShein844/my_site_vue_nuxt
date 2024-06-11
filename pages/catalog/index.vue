@@ -166,7 +166,7 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 2rem;
-  background-color: #ffffff;
+  background-color: #ebebeb;
 }
 
 .page-title {

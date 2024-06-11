@@ -6,15 +6,10 @@
   
   <style scoped>
   .layout-default {
-    box-sizing: border-box;
-    /*position: relative;*/
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1920px;
   }
-  /* .default::before {
-    content: 'layouts/default.vue';
-    position: absolute;
-    top: 2px;
-    left: 5px;
-    color: #68b538;
-    font-family: monospace;
-  } */
   </style>

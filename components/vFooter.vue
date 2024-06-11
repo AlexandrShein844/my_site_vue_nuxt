@@ -21,7 +21,6 @@
     background-color: #1d1c1c;
     color: #fff;
     display: flex;
-    //justify-content: center;
     padding: 1rem 0;
     margin: 0;
   }
