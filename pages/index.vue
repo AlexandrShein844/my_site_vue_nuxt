@@ -17,7 +17,7 @@
 
 <style>
 body {
-  background-image:url(assets/images/цепи_простые.png);
+  background-image:url(assets/images/бэк.png);
   margin: 0;
   padding: 0;
 }
