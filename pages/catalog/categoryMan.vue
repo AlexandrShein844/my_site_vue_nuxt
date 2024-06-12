@@ -20,7 +20,7 @@
       </div>
       <div class="products">
         <div class="product" v-for="product in filteredProducts" :key="product.id">
-          <NuxtLink :to="`catalog/product/${product.id}`">
+          <NuxtLink :to="`product/${product.id}`">
             <img :src="product.image" :alt="product.name" class="product-image">
             <h2 class="product-name">{{ product.name }}</h2>
             <p class="product-price">{{ product.price }} RUB</p>
