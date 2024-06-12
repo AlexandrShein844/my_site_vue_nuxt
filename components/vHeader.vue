@@ -10,9 +10,9 @@
         <div class="nav-item dropdown">
           <NuxtLink to="/catalog?category=" class="nav-link dropdown-btn">Каталог</NuxtLink>
           <div class="dropdown-content">
-            <NuxtLink to="/catalog?category=woman" class="dropdown-item">Женское</NuxtLink>
-            <NuxtLink to="/catalog?category=man" class="dropdown-item">Мужское</NuxtLink>
-            <NuxtLink to="/catalog?category=another" class="dropdown-item">Другое</NuxtLink>
+            <NuxtLink to="/catalog/categoryWoman" class="dropdown-item">Женское</NuxtLink>
+            <NuxtLink to="/catalog/categoryMan" class="dropdown-item">Мужское</NuxtLink>
+            <NuxtLink to="/catalog/categoryAnother" class="dropdown-item">Другое</NuxtLink>
           </div>
         </div>
         <NuxtLink to="/about" class="nav-link">О Нас</NuxtLink>

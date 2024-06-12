@@ -45,7 +45,7 @@ export default {
     const productsData = ref([]) // новая переменная для хранения данных, полученных с сервера
     const products = computed(() => productsData.value) // теперь products будет вычисляемой переменной, которая будет возвращать массив товаров из productsData
     const isAddingToCartId = ref(null)
-    const selectedCategory = ref('man')
+    const selectedCategory = ref('woman')
     const headerHeight = ref(0)
     
 
@@ -58,7 +58,7 @@ export default {
     }
 
     onMounted(async () => {
-      await loadProducts('man') // теперь загружаем товары с сервера при загрузке страницы
+      await loadProducts('woman') // теперь загружаем товары с сервера при загрузке страницы
 
       await nextTick()
       headerHeight.value = document.querySelector('header').offsetHeight
