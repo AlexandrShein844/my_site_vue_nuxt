@@ -1,29 +1,31 @@
 <template>
+  <title>Каталог товаров</title>
   <div class="catalog-page" :style="{ 'margin-top': headerHeight + 'px' }">
     <h1 class="page-title">{{ pageTitle }}</h1>
     <div class="catalog-content">
-      <aside class="sidebar">
-        <div class="sidebar-item" :class="{ active: selectedCategory === '' }" @click="loadProducts('')">
+      <div class="sidebar">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === '' }" @click="loadProducts('')">
           Все товары
         </div>
-        <div class="sidebar-item" :class="{ active: selectedCategory === 'man' }" @click="loadProducts('man')">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'man' }" @click="loadProducts('man')">
           Мужские товары
         </div>
-        <div class="sidebar-item" :class="{ active: selectedCategory === 'woman' }" @click="loadProducts('woman')">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'woman' }" @click="loadProducts('woman')">
           Женские товары
         </div>
-        <div class="sidebar-item" :class="{ active: selectedCategory === 'another' }" @click="loadProducts('another')">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }"
+          @click="loadProducts('another')">
           Разное
         </div>
-      </aside>
+      </div>
       <div class="products">
         <div class="product" v-for="product in filteredProducts" :key="product.id">
-          <NuxtLink :to="`product/${product.id}`">
-            <img :src="product.image" :alt="product.name" class="product-image" />
+          <NuxtLink :to="`catalog/product/${product.id}`">
+            <img :src="product.image" :alt="product.name" class="product-image">
             <h2 class="product-name">{{ product.name }}</h2>
             <p class="product-price">{{ product.price }} RUB</p>
           </NuxtLink>
-          <button v-if="product.category == 'another'" :disabled="isAddingToCartId === product.id"
+          <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id"
             @click="addToCart(product)" class="add-to-cart-button"
             :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
             {{ isAddingToCartId === product.id ? 'Добавление...' : 'В корзину' }}
@@ -64,6 +66,26 @@ export default {
       }
       return products.value.filter(product => product.category === selectedCategory.value)
     })
+
+    const pageTitle = computed(() => {
+      return getPageTitle(selectedCategory.value)
+    })
+
+    const getPageTitle = (category) => {
+      if (!category) {
+        return 'Все товары'
+      }
+      if (category === 'man') {
+        return 'Мужские товары'
+      }
+      if (category === 'woman') {
+        return 'Женские товары'
+      }
+      if (category === 'another') {
+        return 'Разное'
+      }
+      return ''
+    }
 
     const addToCart = async (product) => {
       isAddingToCartId.value = product.id
@@ -119,6 +141,7 @@ export default {
       isAddingToCartId,
       selectedCategory,
       filteredProducts,
+      pageTitle,
       headerHeight,
       loadProducts
     }
