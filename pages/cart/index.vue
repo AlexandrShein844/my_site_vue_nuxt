@@ -19,8 +19,7 @@
                   <button @click.prevent="decrementQuantity(item)" class="counter-button"> - </button>
                   <span class="quantity">{{ item.quantity }}</span>
                   <button @click.prevent="incrementQuantity(item)" class="counter-button"> + </button>
-                  <img @click.prevent="deleteItem(item)" class="counter-button delete-button__img"
-                    src="/assets/images/delete-icon.png" alt="Удалить">
+                  <img @click.prevent="deleteItem(item)" class="counter-button delete-button__img" src="/assets/images/delete-icon.png" alt="Удалить">
                 </div>
               </div>
             </div>
@@ -29,7 +28,7 @@
         <div class="cart-total" v-if="cartItems.length > 0">
           <p class="total-label">Общая стоимость:</p>
           <p class="total-price">{{ totalPrice }} RUB</p>
-          <!-- <button @click="placeOrder" class="place-order-button">Оформить заказ</button> -->
+          <button @click="placeOrder" class="place-order-button">Оформить заказ</button>
           <NuxtLink to="/checkout" class="checkout-link">Перейти к оформлению</NuxtLink>
         </div>
       </div>
@@ -66,7 +65,7 @@ export default {
             size: item.size,
             category: item.category
           })
-          cartItemSizes.value.push(item.size)
+          cartItemSizes.value.push(item.size) 
         }
       })
     })

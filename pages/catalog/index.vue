@@ -13,8 +13,7 @@
         <div class="sidebar-item" :class="{ 'active': selectedCategory === 'woman' }" @click="loadProducts('woman')">
           Женские товары
         </div>
-        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }"
-          @click="loadProducts('another')">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }" @click="loadProducts('another')">
           Разное
         </div>
       </div>
@@ -25,9 +24,7 @@
             <h2 class="product-name">{{ product.name }}</h2>
             <p class="product-price">{{ product.price }} RUB</p>
           </NuxtLink>
-          <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id"
-            @click="addToCart(product)" class="add-to-cart-button"
-            :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
+          <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id" @click="addToCart(product)" class="add-to-cart-button" :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
             {{ isAddingToCartId === product.id ? 'Добавление...' : 'В корзину' }}
           </button>
         </div>
@@ -75,28 +72,18 @@ export default {
     })
 
     const getPageTitle = (category) => {
-      if (!category) {
-        return 'Все товары'
-      }
-      if (category === 'man') {
-        return 'Мужские товары'
-      }
-      if (category === 'woman') {
-        return 'Женские товары'
-      }
-      if (category === 'another') {
-        return 'Разное'
-      }
+      if (!category) return 'Все товары'
+      if (category === 'man') return 'Мужские товары'
+      if (category === 'woman') return 'Женские товары'
+      if (category === 'another') return 'Разное'
       return ''
     }
 
     const addToCart = async (product) => {
       isAddingToCartId.value = product.id
-
       // Отправляем запрос на MockAPI для получения данных о товарах в корзине
       const responseCart = await axios.get('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
       const cartData = responseCart.data
-
       // Проверяем, есть ли в корзине товар с идентичным product_id
       const existingItem = cartData.find((item) => item.product_id === product.id)
 
@@ -164,7 +151,6 @@ export default {
 .catalog-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
   background-color: #ebebeb;
   box-sizing: border-box;
   border-radius: 8px;
@@ -210,7 +196,7 @@ export default {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Три товара в ряд */
   gap: 1rem;
   flex-grow: 1;
   padding: 1rem;
@@ -229,6 +215,7 @@ export default {
   align-items: center;
   text-align: center;
   transition: box-shadow 0.3s ease;
+  height: 350px; /* Задаем фиксированную высоту для карточек */
 }
 
 .product:hover {
@@ -237,7 +224,8 @@ export default {
 
 .product-image {
   width: 100%;
-  height: auto;
+  height: 200px; /* Устанавливаем фиксированную высоту для изображений */
+  object-fit: cover; /* Сохраняем пропорции и заполняем контейнер */
   border-radius: 8px;
 }
 
@@ -284,16 +272,13 @@ export default {
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
   }
-
   25% {
     transform: translateX(-4px);
   }
-
   75% {
     transform: translateX(4px);
   }
