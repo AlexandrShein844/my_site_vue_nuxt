@@ -1,6 +1,5 @@
 <template>
   <title>Каталог товаров</title>
-  <!-- <vHeader /> -->
   <div class="catalog-page" :style="{ 'margin-top': headerHeight + 'px' }">
     <h1 class="page-title">{{ pageTitle }}</h1>
     <div class="catalog-content">
@@ -14,7 +13,8 @@
         <div class="sidebar-item" :class="{ 'active': selectedCategory === 'woman' }" @click="loadProducts('woman')">
           Женские товары
         </div>
-        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }" @click="loadProducts('another')">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }"
+          @click="loadProducts('another')">
           Разное
         </div>
       </div>
@@ -25,10 +25,10 @@
             <h2 class="product-name">{{ product.name }}</h2>
             <p class="product-price">{{ product.price }} RUB</p>
           </NuxtLink>
-          <button v-if="product.category == 'another'"
-            :disabled="isAddingToCartId === product.id" @click="addToCart(product)" class="add-to-cart-button"
+          <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id"
+            @click="addToCart(product)" class="add-to-cart-button"
             :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
-              {{ isAddingToCartId === product.id ? 'Добавление...' : 'В корзину' }}
+            {{ isAddingToCartId === product.id ? 'Добавление...' : 'В корзину' }}
           </button>
         </div>
       </div>
@@ -42,24 +42,20 @@ import { ref, onMounted, computed, nextTick } from 'vue'
 
 export default {
   setup() {
-    const productsData = ref([]) // новая переменная для хранения данных, полученных с сервера
-    const products = computed(() => productsData.value) // теперь products будет вычисляемой переменной, которая будет возвращать массив товаров из productsData
+    const productsData = ref([])
+    const products = computed(() => productsData.value)
     const isAddingToCartId = ref(null)
     const selectedCategory = ref('woman')
     const headerHeight = ref(0)
-    
 
-    // новая функция для загрузки товаров с сервера
     const loadProducts = async (category) => {
       const response = await axios.get(`https://6649e9874032b1331bef35a4.mockapi.io/api/products?category=${category}`)
       productsData.value = response.data
       selectedCategory.value = category
-      pageTitle.value = getPageTitle(category)
     }
 
     onMounted(async () => {
-      await loadProducts('woman') // теперь загружаем товары с сервера при загрузке страницы
-
+      await loadProducts('woman')
       await nextTick()
       headerHeight.value = document.querySelector('header').offsetHeight
     })
@@ -93,18 +89,12 @@ export default {
 
     const addToCart = async (product) => {
       isAddingToCartId.value = product.id
-
-      // Отправляем запрос на MockAPI для получения данных о товарах в корзине
       const responseCart = await axios.get('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
       const cartData = responseCart.data
-
-      // Проверяем, есть ли в корзине товар с идентичным product_id
       const existingItem = cartData.find((item) => item.product_id === product.id)
 
       if (existingItem) {
-        // Если товар уже есть в корзине, увеличиваем его количество
         existingItem.quantity++
-        // Отправляем запрос на MockAPI для обновления количества товара в корзине
         await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${existingItem.id}`, {
           product_id: existingItem.product_id,
           name: existingItem.name,
@@ -114,8 +104,7 @@ export default {
           category: product.category
         })
       } else {
-        // Если товара еще нет в корзине, добавляем его в корзину с количеством 1
-        const response = await axios.post('https://6649e9874032b1331bef35a4.mockapi.io/api/cart', {
+        await axios.post('https://6649e9874032b1331bef35a4.mockapi.io/api/cart', {
           product_id: product.id,
           name: product.name,
           quantity: 1,
@@ -125,7 +114,6 @@ export default {
         })
       }
 
-      // Обновляем данные о товарах в корзине в localStorage
       const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
       const index = cartItems.findIndex((item) => item.id === product.id)
       if (index !== -1) {
@@ -153,9 +141,9 @@ export default {
       isAddingToCartId,
       selectedCategory,
       filteredProducts,
-      headerHeight,
       pageTitle,
-      loadProducts // добавляем новую функцию в возвращаемый объект
+      headerHeight,
+      loadProducts
     }
   }
 }
@@ -165,14 +153,17 @@ export default {
 .catalog-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding-top: 2rem;
+  padding: 2rem;
   background-color: #ebebeb;
+  box-sizing: border-box;
+  border-radius: 8px;
 }
 
 .page-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .catalog-content {
@@ -207,25 +198,36 @@ export default {
 }
 
 .products {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
   flex-grow: 1;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .product {
-  border: 2px solid #000000;
-  width: 50%;
-  margin-bottom: 5px;
-  padding: 5px;
-  box-sizing: border-box;
+  border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 1rem;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.product:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-image {
   width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .product-name {
@@ -243,16 +245,16 @@ export default {
 
 .add-to-cart-button {
   display: inline-block;
-  padding: 2px 5px;
-  margin-top: 5px;
-  font-size: 15px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
   font-weight: bold;
-  color: #ffffff;
+  color: #fff;
   background-color: #454444;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .add-to-cart-button:hover {
@@ -268,5 +270,25 @@ export default {
 
 .adding-to-cart {
   animation: shake 0.5s ease-out both;
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
 }
 </style>

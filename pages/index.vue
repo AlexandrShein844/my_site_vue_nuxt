@@ -6,10 +6,10 @@
     </NuxtLink>
     <section class="images">
       <div class="image-container">
-        <NuxtLink to="/catalog/categoryMan" class="dropdown-item"><img src="/assets/images/custom.png" alt="banner-Men"></NuxtLink>
+        <NuxtLink to="/catalog/categoryMan" class="dropdown-item"><img src="/assets/images/for_man.png" alt="banner-Men"></NuxtLink>
       </div>
       <div class="image-container">
-        <NuxtLink to="/catalog/categoryWomen" class="dropdown-item"><img src="/assets/images/banner-woman.png" alt="banner-Woman"></NuxtLink>
+        <NuxtLink to="/catalog/categoryWomen" class="dropdown-item"><img src="/assets/images/for_woman.png" alt="banner-Woman"></NuxtLink>
       </div>
     </section>
   </main>
@@ -17,7 +17,7 @@
 
 <style>
 body {
-  background-image:url(assets/images/цепи_простые.png);
+  background-image:url(assets/images/бэк.png);
   margin: 0;
   padding: 0;
 }

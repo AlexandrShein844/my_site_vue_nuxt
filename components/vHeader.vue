@@ -3,7 +3,7 @@
     <nav class="nav">
       <div class="nav-brand">
         <NuxtLink to="/" class="nav-logo">
-          <img src="/assets/images/logo-site.png" alt="Logo">
+          <img src="/assets/images/logo.png" alt="Logo">
         </NuxtLink>
       </div>
       <div class="nav-links">
@@ -196,7 +196,7 @@ export default {
 }
 
 .nav-logo img {
-  max-height: 80px;
+  max-height: 50px;
 }
 
 .dropdown {

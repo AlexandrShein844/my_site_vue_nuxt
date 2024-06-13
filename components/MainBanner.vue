@@ -1,6 +1,6 @@
 <template>
 <section class="hero">
-    <img src="/assets/images/banner-pk.png" alt="Hero Image">
+    <img src="/assets/images/banner.jpg" alt="Hero Image">
     </section>
 </template>
 
