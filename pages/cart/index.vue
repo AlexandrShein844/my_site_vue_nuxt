@@ -87,6 +87,10 @@ export default {
 
       const idx = cartItems.value.findIndex((i) => i.id === item.id)
       cartItemSizes.value[idx] = item.size
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     }
 
     const decrementQuantity = async (item) => {
@@ -119,6 +123,10 @@ export default {
           cartItemSizes.value.splice(idx, 1)
         }
       }
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     }
 
     const deleteItem = async (item) => {
@@ -133,6 +141,10 @@ export default {
       if (idx !== -1) {
         cartItemSizes.value.splice(idx, 1)
       }
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     }
 
     const totalPrice = computed(() => {

@@ -49,35 +49,16 @@
 </template>
 
 <script>
-import { useStorage } from '@vueuse/core'
-import { computed, ref, watch, onMounted } from 'vue'
-
-// Добавление метода для получения данных из API
-async function fetchData(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-  return await response.json();
-}
-
-// Добавление метода для обновления данных в хранилище cartItems
-function updateCartItems() {
-  fetchData('https://6649e9874032b1331bef35a4.mockapi.io/api/cart').then(data => {
-    cartItems.value = data;
-  });
-}
+import { ref, computed, watch } from 'vue';
+import { useStorage } from '@vueuse/core';
 
 export default {
   setup() {
     const cartItems = useStorage('cartItems', ref([]));
 
     const cartItemCount = computed(() => {
-      return cartItems.value.reduce((acc, item) => acc + item.quantity, 0)
+      return cartItems.value.reduce((acc, item) => acc + item.quantity, 0);
     });
-
-    // Изменение метода setup() для получения данных из API и хранения их во внутреннем состоянии
-    updateCartItems();
 
     // Добавление данных для поиска товара
     const searchQuery = ref('');
@@ -95,7 +76,7 @@ export default {
       try {
         const response = await fetch(`https://6649e9874032b1331bef35a4.mockapi.io/api/products?name=${searchQuery.value}`);
         if (!response.ok) {
-          errorMessage.value = `HTTP error! Status: ${response.status}`;
+          errorMessage.value = `HTTP error Status: ${response.status}`;
           searchResults.value = [];
           return;
         }
@@ -141,14 +122,18 @@ export default {
       document.addEventListener('click', handleClickOutside);
     });
 
+    // Обновление cartItemCount при изменении cartItems
+    watch(cartItems, () => {
+      cartItemCount.value = cartItems.value.reduce((acc, item) => acc + item.quantity, 0);
+    }, { deep: true, immediate: true });
+
     return {
       cartItems,
       cartItemCount,
       searchQuery,
       searchResults,
       showResults,
-      errorMessage,
-      updateCartItems, // Добавление метода updateCartItems
+      errorMessage
     }
   },
 }

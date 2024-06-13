@@ -106,6 +106,7 @@ export default {
 
       setTimeout(() => {
         isAddingToCartId.value = null
+        window.location.reload()
       }, 1000)
     }
 
