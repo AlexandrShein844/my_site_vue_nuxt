@@ -13,21 +13,18 @@
         <div class="sidebar-item" :class="{ 'active': selectedCategory === 'woman' }" @click="loadProducts('woman')">
           Женские товары
         </div>
-        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }"
-          @click="loadProducts('another')">
+        <div class="sidebar-item" :class="{ 'active': selectedCategory === 'another' }" @click="loadProducts('another')">
           Разное
         </div>
       </div>
       <div class="products">
         <div class="product" v-for="product in filteredProducts" :key="product.id">
-          <NuxtLink :to="`product/${product.id}`">
+          <NuxtLink :to="`catalog/product/${product.id}`">
             <img :src="product.image" :alt="product.name" class="product-image">
             <h2 class="product-name">{{ product.name }}</h2>
             <p class="product-price">{{ product.price }} RUB</p>
           </NuxtLink>
-          <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id"
-            @click="addToCart(product)" class="add-to-cart-button"
-            :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
+          <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id" @click="addToCart(product)" class="add-to-cart-button" :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
             {{ isAddingToCartId === product.id ? 'Добавление...' : 'В корзину' }}
           </button>
         </div>
@@ -42,20 +39,23 @@ import { ref, onMounted, computed, nextTick } from 'vue'
 
 export default {
   setup() {
-    const productsData = ref([])
-    const products = computed(() => productsData.value)
+    const productsData = ref([]) // новая переменная для хранения данных, полученных с сервера
+    const products = computed(() => productsData.value) // теперь products будет вычисляемой переменной, которая будет возвращать массив товаров из productsData
     const isAddingToCartId = ref(null)
     const selectedCategory = ref('another')
     const headerHeight = ref(0)
 
+    // новая функция для загрузки товаров с сервера
     const loadProducts = async (category) => {
       const response = await axios.get(`https://6649e9874032b1331bef35a4.mockapi.io/api/products?category=${category}`)
       productsData.value = response.data
       selectedCategory.value = category
+      pageTitle.value = getPageTitle(category)
     }
 
     onMounted(async () => {
-      await loadProducts('another')
+      await loadProducts('another') // теперь загружаем товары с сервера при загрузке страницы
+
       await nextTick()
       headerHeight.value = document.querySelector('header').offsetHeight
     })
@@ -72,29 +72,25 @@ export default {
     })
 
     const getPageTitle = (category) => {
-      if (!category) {
-        return 'Все товары'
-      }
-      if (category === 'man') {
-        return 'Мужские товары'
-      }
-      if (category === 'woman') {
-        return 'Женские товары'
-      }
-      if (category === 'another') {
-        return 'Разное'
-      }
+      if (!category) return 'Все товары'
+      if (category === 'man') return 'Мужские товары'
+      if (category === 'woman') return 'Женские товары'
+      if (category === 'another') return 'Разное'
       return ''
     }
 
     const addToCart = async (product) => {
       isAddingToCartId.value = product.id
+      // Отправляем запрос на MockAPI для получения данных о товарах в корзине
       const responseCart = await axios.get('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
       const cartData = responseCart.data
+      // Проверяем, есть ли в корзине товар с идентичным product_id
       const existingItem = cartData.find((item) => item.product_id === product.id)
 
       if (existingItem) {
+        // Если товар уже есть в корзине, увеличиваем его количество
         existingItem.quantity++
+        // Отправляем запрос на MockAPI для обновления количества товара в корзине
         await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${existingItem.id}`, {
           product_id: existingItem.product_id,
           name: existingItem.name,
@@ -104,6 +100,7 @@ export default {
           category: product.category
         })
       } else {
+        // Если товара еще нет в корзине, добавляем его в корзину с количеством 1
         await axios.post('https://6649e9874032b1331bef35a4.mockapi.io/api/cart', {
           product_id: product.id,
           name: product.name,
@@ -114,6 +111,7 @@ export default {
         })
       }
 
+      // Обновляем данные о товарах в корзине в localStorage
       const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
       const index = cartItems.findIndex((item) => item.id === product.id)
       if (index !== -1) {
@@ -141,9 +139,9 @@ export default {
       isAddingToCartId,
       selectedCategory,
       filteredProducts,
-      pageTitle,
       headerHeight,
-      loadProducts
+      pageTitle,
+      loadProducts // добавляем новую функцию в возвращаемый объект
     }
   }
 }
@@ -153,7 +151,6 @@ export default {
 .catalog-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
   background-color: #ebebeb;
   box-sizing: border-box;
   border-radius: 8px;
@@ -199,7 +196,7 @@ export default {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Три товара в ряд */
   gap: 1rem;
   flex-grow: 1;
   padding: 1rem;
@@ -218,6 +215,7 @@ export default {
   align-items: center;
   text-align: center;
   transition: box-shadow 0.3s ease;
+  height: 350px; /* Задаем фиксированную высоту для карточек */
 }
 
 .product:hover {
@@ -226,7 +224,8 @@ export default {
 
 .product-image {
   width: 100%;
-  height: auto;
+  height: 200px; /* Устанавливаем фиксированную высоту для изображений */
+  object-fit: cover; /* Сохраняем пропорции и заполняем контейнер */
   border-radius: 8px;
 }
 
@@ -273,22 +272,15 @@ export default {
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
   }
-
   25% {
-    transform: translateX(-5px);
+    transform: translateX(-4px);
   }
-
-  50% {
-    transform: translateX(5px);
-  }
-
   75% {
-    transform: translateX(-5px);
+    transform: translateX(4px);
   }
 }
 </style>
