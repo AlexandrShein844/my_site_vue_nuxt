@@ -168,6 +168,8 @@ export default {
 }
 
 .sidebar {
+  height: calc(100vh - 100px); /* Вычитаем высоту header и padding. Вы можете изменить значение, чтобы оно подходило вам */
+  overflow-y: auto; /* Добавляем прокрутку, если элементы не помещаются */
   width: 200px;
   padding: 1rem;
   background-color: #f5f5f5;
@@ -175,6 +177,8 @@ export default {
 }
 
 .sidebar-item {
+  /* display: flex;
+  align-items: center; */
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
@@ -196,7 +200,7 @@ export default {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Три товара в ряд */
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   flex-grow: 1;
   padding: 1rem;
@@ -206,6 +210,7 @@ export default {
 }
 
 .product {
+  width: 200px;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 1rem;
