@@ -1,4 +1,5 @@
 <template>
+  <title>Оформление заказа</title>
   <div class="order-page">
     <div class="order-container">
       <div class="order-steps-container">
