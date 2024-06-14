@@ -28,8 +28,7 @@
         <div class="cart-total" v-if="cartItems.length > 0">
           <p class="total-label">Общая стоимость:</p>
           <p class="total-price">{{ totalPrice }} RUB</p>
-          <button @click="placeOrder" class="place-order-button">Оформить заказ</button>
-          <NuxtLink to="/checkout" class="checkout-link">Перейти к оформлению</NuxtLink>
+          <NuxtLink @click.native="placeOrder" to="/checkout" class="place-order-button checkout-link">Оформить заказ</NuxtLink>
         </div>
       </div>
     </div>
@@ -303,7 +302,6 @@ export default {
 
 .place-order-button {
   background-color: #313131;
-  color: #fff;
   border: none;
   border-radius: 5px;
   width: 100%;
@@ -321,13 +319,13 @@ export default {
   display: block;
   text-align: center;
   margin-top: 1rem;
-  color: #313131;
+  color: #bcbcbc;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .checkout-link:hover {
-  color: #000;
+  color: #ffffff;
 }
 </style>
