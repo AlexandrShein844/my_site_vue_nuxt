@@ -135,7 +135,7 @@ export default {
 
 <style lang="less" scoped>
   .order-page {
-    padding: 2rem 0;
+    padding: 2rem 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -143,7 +143,8 @@ export default {
   }
   
   .order-container {
-    width: 80%;
+    width: auto;
+    padding: 16px;
     display: flex;
     justify-content: space-between;
     background-color: #ffffff;
