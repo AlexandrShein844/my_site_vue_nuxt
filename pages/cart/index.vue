@@ -28,7 +28,7 @@
         <div class="cart-total" v-if="cartItems.length > 0">
           <p class="total-label">Общая стоимость:</p>
           <p class="total-price">{{ totalPrice }} RUB</p>
-          <NuxtLink @click.native="placeOrder" to="/checkout" class="place-order-button checkout-link">Оформить заказ</NuxtLink>
+          <NuxtLink to="/checkout" class="place-order-button checkout-link">Оформить заказ</NuxtLink>
         </div>
       </div>
     </div>
