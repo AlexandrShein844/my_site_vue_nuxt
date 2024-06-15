@@ -42,7 +42,7 @@
   .home-button {
     display: inline-block;
     padding: 0.75rem 1.5rem;
-    background-color: #ffcc00;
+    background-color: #8e8e8e;
     color: #000;
     text-decoration: none;
     border-radius: 5px;
@@ -51,7 +51,7 @@
   }
   
   .home-button:hover {
-    background-color: #e6b800;
+    background-color: #bebebe;
   }
   </style>
   
