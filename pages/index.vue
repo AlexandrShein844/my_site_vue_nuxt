@@ -2,11 +2,12 @@
   <title>Главная</title>
   <main class="main">
     <section class="hero-section">
-      <h1 class="hero-title">Добро пожаловать в наш интернет-магазин!</h1>
+      <h1 class="hero-title">Alexandro's Shop</h1>
       <NuxtLink to="/catalog">
-        <MainBanner class="main-banner"/>
+        <MainBanner />
       </NuxtLink>
     </section>
+    <h3 class="hero-title">Мужское Женское</h3>
     <section class="banner-section">
       <div class="image-container">
         <NuxtLink to="/catalog/categoryMan" class="dropdown-item">
@@ -59,8 +60,7 @@
 .main {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  margin-top: 60px;
+  padding: 1rem 1rem;
 }
 
 .hero-section {
@@ -70,17 +70,19 @@
 }
 
 .hero-title {
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 3rem;
+  font-size: 4rem; /* Увеличение размера шрифта заголовка */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1rem; /* Добавление отступа снизу */
+  text-align: center;
+  color: #eeeeee;
+  background-color: #c6c6c6;
+  border-radius: 100px;
 }
 
 .main-banner {
   width: 100%;
-  height: 100vh;
+  height: auto; /* Изменение высоты баннера для подгонки под содержимое */
+  max-height: 500px; /* Максимальная высота баннера */
   object-fit: cover;
 }
 
@@ -180,3 +182,4 @@
   color: #666;
 }
 </style>
+
