@@ -16,7 +16,6 @@
           </div>
         </div>
         <NuxtLink to="/about" class="nav-link" @click="hideResultsImmediately">О Нас</NuxtLink>
-        <NuxtLink to="/contact" class="nav-link" @click="hideResultsImmediately">Контакты</NuxtLink>
         <NuxtLink to="/cart" class="nav-link cart-link" @click="hideResultsImmediately">
           <img src="/assets/images/basket.png" alt="Корзина">
           <span v-if="cartItemCount" class="nav-cart-count">{{ cartItemCount }}</span>
@@ -65,6 +64,10 @@ export default {
     const showResults = ref(false);
     const errorMessage = ref('');
 
+    const limitedResults = computed(() => {
+      return searchResults.value.slice(0, 5);
+    });
+
     async function searchProducts() {
       if (!searchQuery.value) {
         searchResults.value = [];
@@ -100,11 +103,17 @@ export default {
     function hideResults() {
       setTimeout(() => {
         showResults.value = false;
+        searchQuery.value = ''; // Clear the search input
+        searchResults.value = []; // Clear the search results
+        errorMessage.value = ''; // Clear any error messages
       }, 100);
     }
 
     function hideResultsImmediately() {
       showResults.value = false;
+      searchQuery.value = ''; // Clear the search input
+      searchResults.value = []; // Clear the search results
+      errorMessage.value = ''; // Clear any error messages
     }
 
     function handleClickOutside(event) {
@@ -128,12 +137,14 @@ export default {
       cartItemCount,
       searchQuery,
       searchResults,
+      limitedResults,
       showResults,
       errorMessage,
       hideResultsImmediately
     }
   },
 }
+
 </script>
 
 <style scoped>
@@ -233,9 +244,9 @@ export default {
 
 .nav-search input {
   border: none;
-  border-bottom: 2px solid #fff;
+  border-bottom: 2px solid #b4b4b4;
   background-color: transparent;
-  color: #fff;
+  color: #d0d0d0;
   padding: 5px;
   outline: none;
   width: 200px;
@@ -244,7 +255,7 @@ export default {
 
 .nav-search input:focus {
   width: 300px;
-  border-color: #ffcc00;
+  border-color: #ffffff;
 }
 
 .search-results {
@@ -253,6 +264,8 @@ export default {
   left: 0;
   background-color: #2e2c2c;
   width: 100%;
+  max-height: 200px; /* Adjust height as needed */
+  overflow-y: auto;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
@@ -280,7 +293,7 @@ export default {
   position: absolute;
   top: 15px;
   right: -10px;
-  background-color: #ffcc00;
+  background-color: #b1b1b1;
   color: #000;
   border-radius: 50%;
   padding: 2px 6px;
