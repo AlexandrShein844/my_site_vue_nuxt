@@ -45,7 +45,8 @@ export default {
     const cartItems = ref([])
     const cartItemSizes = ref([])
 
-    onMounted(async () => {
+    // Функция для загрузки данных корзины
+    const loadCartData = async () => {
       const responseProducts = await axios.get('https://6649e9874032b1331bef35a4.mockapi.io/api/products')
       products.value = responseProducts.data
 
@@ -67,67 +68,51 @@ export default {
           cartItemSizes.value.push(item.size) 
         }
       })
+    }
+
+    onMounted(() => {
+      loadCartData()
     })
 
+    // Функция для увеличения количества товара
     const incrementQuantity = async (item) => {
       item.quantity++
-      const cartItemsData = JSON.parse(localStorage.getItem('cartItems')) || []
-      const index = cartItemsData.findIndex((i) => i.id === item.id)
-      cartItemsData[index] = item
-      localStorage.setItem('cartItems', JSON.stringify(cartItemsData))
+      await updateCart(item)
+      updateLocalStorage()
+      reloadPage()
+    }
 
-      await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${item.id}`, {
+    // Функция для уменьшения количества товара
+    const decrementQuantity = async (item) => {
+      if (item.quantity > 1) {
+        item.quantity--
+        await updateCart(item)
+        updateLocalStorage()
+        reloadPage()
+      } else {
+        await deleteItem(item)
+        updateLocalStorage()
+        reloadPage()
+      }
+    }
+
+    // Функция для обновления данных товара в корзине
+    const updateCart = async (item) => {
+      const response = await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${item.id}`, {
         product_id: item.product_id,
         quantity: item.quantity,
         price: item.price,
         size: item.size,
         category: item.category
       })
-
       const idx = cartItems.value.findIndex((i) => i.id === item.id)
-      cartItemSizes.value[idx] = item.size
-
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000)
-    }
-
-    const decrementQuantity = async (item) => {
-      if (item.quantity > 1) {
-        item.quantity--
-        const cartItemsData = JSON.parse(localStorage.getItem('cartItems')) || []
-        const index = cartItemsData.findIndex((i) => i.id === item.id)
-        cartItemsData[index] = item
-        localStorage.setItem('cartItems', JSON.stringify(cartItemsData))
-        await axios.put(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${item.id}`, {
-          product_id: item.product_id,
-          quantity: item.quantity,
-          price: item.price,
-          size: item.size,
-          category: item.category
-        })
-
-        const idx = cartItems.value.findIndex((i) => i.id === item.id)
-        cartItemSizes.value[idx] = item.size
-      } else {
-        const cartItemsData = JSON.parse(localStorage.getItem('cartItems')) || []
-        const index = cartItemsData.findIndex((i) => i.id === item.id)
-        cartItemsData.splice(index, 1)
-        localStorage.setItem('cartItems', JSON.stringify(cartItemsData))
-        axios.delete(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${item.id}`)
-        cartItems.value = cartItems.value.filter((i) => i.id !== item.id)
-
-        const idx = cartItems.value.findIndex((i) => i.id === item.id)
-        if (idx !== -1) {
-          cartItemSizes.value.splice(idx, 1)
-        }
+      cartItems.value[idx] = {
+        ...cartItems.value[idx],
+        quantity: response.data.quantity
       }
-
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000)
     }
 
+    // Функция для удаления товара из корзины
     const deleteItem = async (item) => {
       const cartItemsData = JSON.parse(localStorage.getItem('cartItems')) || []
       const index = cartItemsData.findIndex((i) => i.id === item.id)
@@ -140,22 +125,41 @@ export default {
       if (idx !== -1) {
         cartItemSizes.value.splice(idx, 1)
       }
+      reloadPage();
+    }
 
+    // Функция для обновления данных в localStorage
+    const updateLocalStorage = () => {
+      const cartItemsData = cartItems.value.map((item) => ({
+        id: item.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+        size: item.size,
+        category: item.category
+      }))
+      localStorage.setItem('cartItems', JSON.stringify(cartItemsData))
+    }
+
+    // Функция для перезагрузки страницы
+    const reloadPage = () => {
       setTimeout(() => {
         window.location.reload()
       }, 1000)
     }
 
-    const totalPrice = computed(() => {
-      return cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    })
-
+    // Функция для размещения заказа
     const placeOrder = async () => {
       await axios.delete('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
       cartItems.value = []
       localStorage.removeItem('cartItems')
       cartItemSizes.value = []
     }
+
+    // Вычисляемое свойство для общей стоимости
+    const totalPrice = computed(() => {
+      return cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    })
 
     return {
       products,
@@ -169,6 +173,7 @@ export default {
     }
   },
 }
+
 </script>
 
 <style scoped>
@@ -201,7 +206,6 @@ export default {
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   padding: 1rem;
   background-color: #f5f5f5;
