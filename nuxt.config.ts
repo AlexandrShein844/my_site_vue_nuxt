@@ -3,9 +3,8 @@
 //   devtools: { enabled: true }
 // })
 export default {
-
+  //target: 'static', //для билда
   devtools: { enabled: true },
-  // Роутинг
   // routes: [
   //   {
   //     path: '/main',
@@ -16,15 +15,12 @@ export default {
   //     component: () => import('@/pages/catalog.vue')
   //   }
   // ],
-  // Загрузка данных
   axios: {
     baseURL: 'https://api.example.com'
   },
-  // Настройки безопасности
   security: {
     csrf: true
   },
-  // Заголовок и мета-теги
   head: {
     title: 'Магазин одежды',
     meta: [
@@ -32,11 +28,11 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' }
     ]
   },
-  // Стили и скрипты
   link: [
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans' }
   ],
   script: [
     { src: 'https://code.jquery.com/jquery-3.6.0.min.js' }
-  ]
+  ],
+  //buildDir: 'dist' // для билда
 }
