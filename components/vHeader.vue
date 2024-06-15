@@ -10,14 +10,14 @@
         <div class="nav-item dropdown">
           <NuxtLink to="/catalog?category=" class="nav-link dropdown-btn">Каталог</NuxtLink>
           <div class="dropdown-content">
-            <NuxtLink to="/catalog/categoryWoman" class="dropdown-item">Женское</NuxtLink>
-            <NuxtLink to="/catalog/categoryMan" class="dropdown-item">Мужское</NuxtLink>
-            <NuxtLink to="/catalog/categoryAnother" class="dropdown-item">Другое</NuxtLink>
+            <NuxtLink to="/catalog/categoryWoman" class="dropdown-item" @click="hideResultsImmediately">Женское</NuxtLink>
+            <NuxtLink to="/catalog/categoryMan" class="dropdown-item" @click="hideResultsImmediately">Мужское</NuxtLink>
+            <NuxtLink to="/catalog/categoryAnother" class="dropdown-item" @click="hideResultsImmediately">Другое</NuxtLink>
           </div>
         </div>
-        <NuxtLink to="/about" class="nav-link">О Нас</NuxtLink>
-        <NuxtLink to="/contact" class="nav-link">Контакты</NuxtLink>
-        <NuxtLink to="/cart" class="nav-link">
+        <NuxtLink to="/about" class="nav-link" @click="hideResultsImmediately">О Нас</NuxtLink>
+        <NuxtLink to="/contact" class="nav-link" @click="hideResultsImmediately">Контакты</NuxtLink>
+        <NuxtLink to="/cart" class="nav-link cart-link" @click="hideResultsImmediately">
           <img src="/assets/images/basket.png" alt="Корзина">
           <span v-if="cartItemCount" class="nav-cart-count">{{ cartItemCount }}</span>
         </NuxtLink>
@@ -27,7 +27,7 @@
         <div v-if="showResults" class="search-results">
           <div v-if="searchResults.length">
             <div v-for="result in searchResults" :key="result.id" class="search-result">
-              <NuxtLink :to="`/catalog/product/${result.id}`" class="search-result-link">
+              <NuxtLink :to="`/catalog/product/${result.id}`" class="search-result-link" @click="hideResultsImmediately">
                 {{ result.name }}
               </NuxtLink>
             </div>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useStorage } from '@vueuse/core';
 
 export default {
@@ -60,13 +60,11 @@ export default {
       return cartItems.value.reduce((acc, item) => acc + item.quantity, 0);
     });
 
-    // Добавление данных для поиска товара
     const searchQuery = ref('');
     const searchResults = ref([]);
     const showResults = ref(false);
     const errorMessage = ref('');
 
-    // Метод для поиска товара
     async function searchProducts() {
       if (!searchQuery.value) {
         searchResults.value = [];
@@ -88,7 +86,6 @@ export default {
       }
     }
 
-    // Метод для обработки ввода в поле для поиска
     function handleInput() {
       if (searchQuery.value) {
         searchProducts();
@@ -98,17 +95,18 @@ export default {
       }
     }
 
-    // Вызов метода searchProducts() при изменении searchQuery
     watch(searchQuery, handleInput);
 
-    // Метод для скрытия результатов поиска
     function hideResults() {
       setTimeout(() => {
         showResults.value = false;
       }, 100);
     }
 
-    // Метод для обработки клика вне поля для ввода и списка результатов поиска
+    function hideResultsImmediately() {
+      showResults.value = false;
+    }
+
     function handleClickOutside(event) {
       const searchInput = event.target.closest('.nav-search input');
       const searchResults = event.target.closest('.search-results');
@@ -117,12 +115,10 @@ export default {
       }
     }
 
-    // Добавление обработчика события click на весь документ после монтирования компонента
     onMounted(() => {
       document.addEventListener('click', handleClickOutside);
     });
 
-    // Обновление cartItemCount при изменении cartItems
     watch(cartItems, () => {
       cartItemCount.value = cartItems.value.reduce((acc, item) => acc + item.quantity, 0);
     }, { deep: true, immediate: true });
@@ -133,7 +129,8 @@ export default {
       searchQuery,
       searchResults,
       showResults,
-      errorMessage
+      errorMessage,
+      hideResultsImmediately
     }
   },
 }
@@ -150,6 +147,8 @@ export default {
   color: #fff;
   display: flex;
   justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav {
@@ -158,26 +157,24 @@ export default {
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  position: relative;
+  padding: 0 20px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
 }
 
 .nav-link {
-  position: relative;
-  top: -10px;
   color: #ffffffd5;
   text-decoration: none;
   margin: 0 1rem;
-}
-
-.nav-link img {
-  position:relative;
-  bottom: -10px;
+  transition: color 0.3s;
+  position: relative;
 }
 
 .nav-link:hover {
   color: #fff;
-  text-decoration: none;
-  margin: 0 1rem;
 }
 
 .nav-logo img {
@@ -186,25 +183,27 @@ export default {
 
 .dropdown {
   position: relative;
-  display: inline-block;
 }
 
 .dropdown-content {
   border-radius: 5px;
   display: none;
   position: absolute;
-  left: -75px;
+  top: 100%;
+  left: 0;
+  right: 0;
   background-color: #2e2c2c;
-  min-width: 160px;
-  box-shadow: 5px 10px 5px rgb(96, 96, 96);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: dropdownAnimation 0.3s ease-in-out;
 }
 
 .dropdown-content a {
-  
   color: #fff;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  transition: background-color 0.3s;
 }
 
 .dropdown-content a:hover {
@@ -213,6 +212,17 @@ export default {
 
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+@keyframes dropdownAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .nav-search {
@@ -234,6 +244,7 @@ export default {
 
 .nav-search input:focus {
   width: 300px;
+  border-color: #ffcc00;
 }
 
 .search-results {
@@ -242,7 +253,8 @@ export default {
   left: 0;
   background-color: #2e2c2c;
   width: 100%;
-  box-shadow: 5px 10px 5px rgb(96, 96, 96);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
 .search-result {
@@ -252,9 +264,27 @@ export default {
 .search-result-link {
   color: #fff;
   text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
 }
 
 .search-result-link:hover {
-  text-decoration: underline;
+  background-color: #272727;
+}
+
+.cart-link {
+  position: relative;
+}
+
+.nav-cart-count {
+  position: absolute;
+  top: 15px;
+  right: -10px;
+  background-color: #ffcc00;
+  color: #000;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>
