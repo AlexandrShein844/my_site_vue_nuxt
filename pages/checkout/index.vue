@@ -55,11 +55,13 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
     const orderSteps = ref(['Полное имя', 'Полный адрес', 'Банковская карта'])
     const currentStep = ref(0)
+    const router = useRouter()
 
     const orderData = ref({
       fullName: '',
@@ -87,7 +89,19 @@ export default {
       cartItems.value = data
     })
 
-    const submitOrder = () => {
+    const clearCartOnServer = async () => {
+      const response = await fetch('https://6649e9874032b1331bef35a4.mockapi.io/api/cart')
+      const data = await response.json()
+
+      // Удаляем каждый элемент из корзины
+      for (const item of data) {
+        await fetch(`https://6649e9874032b1331bef35a4.mockapi.io/api/cart/${item.id}`, {
+          method: 'DELETE'
+        })
+      }
+    }
+
+    const submitOrder = async () => {
       // Добавляем данные о товарах и итоговую сумму к orderData
       orderData.value.items = cartItems.value
       orderData.value.totalPrice = totalPrice.value
@@ -95,32 +109,21 @@ export default {
       // Сохраняем orderData в localStorage
       localStorage.setItem('orderData', JSON.stringify(orderData.value))
 
-      // Отправляем данные о заказе на сервер
-      fetch('https://your-api-url/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderData.value)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data)
-        // Очищаем корзину и поля ввода
-        cartItems.value = []
-        orderData.value = {
-          fullName: '',
-          fullAddress: '',
-          cardNumber: '',
-          cardExpiry: '',
-          cardCVV: ''
-        }
-        // Перенаправляем пользователя на страницу успешного заказа
-        window.location.href = '/success'
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      })
+      // Очищаем корзину в localStorage
+      localStorage.removeItem('cartItems')
+      cartItems.value = []
+
+      // Очищаем корзину на сервере
+      await clearCartOnServer()
+
+      // Перенаправляем пользователя на страницу успешного заказа
+      reloadPage()
+      router.push('/success')
+    }
+    const reloadPage = () => {
+      setTimeout(() => {
+        window.location.reload()
+      }, 100)
     }
 
     return {
@@ -135,6 +138,10 @@ export default {
   }
 }
 </script>
+
+
+
+
 
 <style lang="less" scoped>
   .order-page {
