@@ -201,8 +201,11 @@ export default {
 }
 
 .sidebar-item.active {
-  background-color: #ffc107; /* Цвет активного элемента */
+  background-color: #b5b5b5; /* Цвет активного элемента */
   color: #333;
+}
+.product-link{
+  text-decoration: none;
 }
 
 .products {
@@ -272,7 +275,7 @@ export default {
   font-size: 1rem;
   font-weight: bold;
   color: #fff;
-  background-color: #ffc107;
+  background-color: #393939;
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s ease;
@@ -281,7 +284,7 @@ export default {
 }
 
 .add-to-cart-button:hover {
-  background-color: #ffca2b; /* Изменение цвета кнопки при наведении */
+  background-color: #171717; /* Изменение цвета кнопки при наведении */
 }
 
 .add-to-cart-button:disabled,
