@@ -143,7 +143,7 @@
 }
 
 .cta-button {
-  background-color: #ffcc00;
+  background-color: #ababab;
   color: #000;
   padding: 0.5rem 1rem;
   text-decoration: none;
@@ -154,7 +154,7 @@
 }
 
 .cta-button:hover {
-  background-color: #e6b800;
+  background-color: #d3d3d3;
 }
 
 .features {
