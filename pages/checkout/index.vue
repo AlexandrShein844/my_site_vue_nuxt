@@ -42,6 +42,7 @@
         <ul>
           <li v-for="(item, index) in cartItems" :key="index">
             {{ item.name }} - {{ item.price }} RUB
+            <span class="item-quantity">x {{ item.quantity }}</span>
           </li>
         </ul>
         <hr>
@@ -50,6 +51,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { ref, computed, onMounted } from 'vue'
@@ -141,18 +143,24 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: #ebebeb;
+    font-family: Arial, sans-serif; /* Пример шрифта */
   }
   
   .order-container {
-    width: auto;
-    padding: 16px;
+    width: 90%; /* Пример задания ширины */
+    max-width: 1200px; /* Пример ограничения максимальной ширины */
+    margin: 0 auto; /* Центрирование контейнера */
+    padding: 5%;
     display: flex;
     justify-content: space-between;
     background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Пример тени */
+    border-radius: 10px; /* Пример закругления углов */
   }
   
   .order-steps-container {
     width: 20%;
+    margin-right: 10%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -189,9 +197,10 @@ export default {
   
     input {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.75rem;
       border: 1px solid #ccc;
       border-radius: 5px;
+      font-size: 16px; /* Пример изменения размера шрифта */
     }
   
     button {
@@ -212,7 +221,8 @@ export default {
   }
   
   .order-summary-container {
-    width: 35%;
+    width: 40%;
+    margin-left: 15%;
     font-weight: bold;
     display: flex;
     flex-direction: column;
@@ -225,9 +235,17 @@ export default {
       width: 100%;
   
       li {
-        padding: 0.5rem 0;
+        padding: 1rem 0;
         border-bottom: 1px solid #ccc;
         text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+  
+        .item-quantity {
+          color: #666; /* Цвет количества товара */
+          font-size: 14px; /* Размер шрифта количества */
+        }
       }
     }
   
@@ -237,5 +255,6 @@ export default {
       margin: 1rem 0;
     }
   }
-  </style>
+</style>
+
   
