@@ -19,10 +19,14 @@
       </div>
       <div class="products">
         <div class="product" v-for="product in filteredProducts" :key="product.id">
-          <NuxtLink :to="`catalog/product/${product.id}`">
-            <img :src="product.image" :alt="product.name" class="product-image">
-            <h2 class="product-name">{{ product.name }}</h2>
-            <p class="product-price">{{ product.price }} RUB</p>
+          <NuxtLink :to="`catalog/product/${product.id}`" class="product-link">
+            <div class="product-image-container">
+              <img :src="product.image" :alt="product.name" class="product-image">
+            </div>
+            <div class="product-details">
+              <h2 class="product-name">{{ product.name }}</h2>
+              <p class="product-price">{{ product.price }} RUB</p>
+            </div>
           </NuxtLink>
           <button v-if="product.category === 'another'" :disabled="isAddingToCartId === product.id" @click="addToCart(product)" class="add-to-cart-button" :class="{ 'adding-to-cart': isAddingToCartId === product.id }">
             {{ isAddingToCartId === product.id ? 'Добавление...' : 'В корзину' }}
@@ -32,6 +36,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios'
@@ -152,16 +157,17 @@ export default {
 .catalog-page {
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #ebebeb;
-  box-sizing: border-box;
+  background-color: #f8f9fa; /* Цвет фона каталога */
+  padding: 20px;
   border-radius: 8px;
 }
 
 .page-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   text-align: center;
+  color: #333; /* Цвет заголовка */
 }
 
 .catalog-content {
@@ -169,18 +175,18 @@ export default {
 }
 
 .sidebar {
-  height: calc(100vh - 100px); /* Вычитаем высоту header и padding. Вы можете изменить значение, чтобы оно подходило вам */
-  overflow-y: auto; /* Добавляем прокрутку, если элементы не помещаются */
+  height: 100%; /* Заполняем высоту сайдбара на всю доступную область */
+  overflow-y: auto;
   width: 200px;
   padding: 1rem;
-  background-color: #f5f5f5;
+  background-color: #fff; /* Цвет фона сайдбара */
   margin-right: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень для блока */
 }
 
 .sidebar-item {
-  /* display: flex;
-  align-items: center; */
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
   font-weight: bold;
@@ -191,86 +197,97 @@ export default {
 }
 
 .sidebar-item:hover {
-  background-color: #ddd;
+  background-color: #f1f1f1; /* Цвет фона при наведении на элемент */
 }
 
 .sidebar-item.active {
-  background-color: #454444;
-  color: #fff;
+  background-color: #ffc107; /* Цвет активного элемента */
+  color: #333;
 }
 
 .products {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* Три колонки */
   gap: 1rem;
-  flex-grow: 1;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Обрезаем контент внутри блока */
 }
 
 .product {
-  width: 200px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1rem;
+  width: 200px; /* Фиксированная ширина карточки */
   background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: box-shadow 0.3s ease;
-  height: 350px; /* Задаем фиксированную высоту для карточек */
+  flex-direction: column; /* Делаем карточку блочным элементом с вертикальным направлением */
 }
 
 .product:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px); /* Легкое поднятие карточки при наведении */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image-container {
+  position: relative;
+  overflow: hidden;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 .product-image {
   width: 100%;
-  height: 200px; /* Устанавливаем фиксированную высоту для изображений */
-  object-fit: cover; /* Сохраняем пропорции и заполняем контейнер */
-  border-radius: 8px;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease; /* Плавное изменение при наведении на изображение */
+}
+
+.product:hover .product-image {
+  transform: scale(1.05); /* Увеличение изображения при наведении */
+}
+
+.product-details {
+  padding: 1rem;
+  flex-grow: 1; /* Занимаем всё доступное пространство внутри карточки */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Размещаем элементы внизу контейнера */
 }
 
 .product-name {
-  margin-top: 0.5rem;
-  margin-bottom: 0.25rem;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
 .product-price {
-  margin: 0;
   font-size: 1.1rem;
-  color: #1b1b1b;
+  color: #6c757d;
+  margin-top: auto; /* Выравниваем цену внизу */
 }
 
 .add-to-cart-button {
-  display: inline-block;
+  width: 100%;
   padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
   font-size: 1rem;
   font-weight: bold;
   color: #fff;
-  background-color: #454444;
+  background-color: #ffc107;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   transition: background-color 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .add-to-cart-button:hover {
-  background-color: #171717;
+  background-color: #ffca2b; /* Изменение цвета кнопки при наведении */
 }
 
 .add-to-cart-button:disabled,
 .add-to-cart-button.adding-to-cart {
   cursor: not-allowed;
-  opacity: 0.5;
-  background-color: #505050;
+  opacity: 0.7;
 }
 
 .adding-to-cart {
@@ -278,8 +295,7 @@ export default {
 }
 
 @keyframes shake {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateX(0);
   }
   25% {
@@ -290,3 +306,4 @@ export default {
   }
 }
 </style>
+
