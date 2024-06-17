@@ -2,7 +2,7 @@
   <title>Главная</title>
   <main class="main">
     <section class="hero-section">
-      <h1 class="hero-title">Alexandro's Shop</h1>
+      <h1 class="hero-title">Alexander's Shop</h1>
       <NuxtLink to="/catalog">
         <MainBanner />
       </NuxtLink>
