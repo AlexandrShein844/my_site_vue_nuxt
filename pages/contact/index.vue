@@ -2,6 +2,7 @@
     <title>Контакты</title>
     <div class="info">
       <h1 class="info-text">Вы можете связаться с создателем сайта по почте: Al3xandrShein@yandex.ru</h1>
+      <h1 class="info-text">или по номеру телефона: +7-913-797-26-88</h1>
     </div>
   </template>
   
