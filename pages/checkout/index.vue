@@ -123,7 +123,7 @@ export default {
     const reloadPage = () => {
       setTimeout(() => {
         window.location.reload()
-      }, 100)
+      }, 1000)
     }
 
     return {
